@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Kos Mahasiswa di Tuban Jawa Timur</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                              url('https://events.rumah123.com/wp-content/uploads/sites/38/2021/10/17144540/desain-rumah-rumah-kos-kosan.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .page { display: none; }
+        .page.active { display: block; }
+        .step.active { background-color: #2563eb; color: white; }
+        .kos-card { transition: all 0.3s ease; }
+        .kos-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .mobile-nav { transform: translateX(-100%); transition: transform 0.3s ease; }
+        .mobile-nav.open { transform: translateX(0); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600 cursor-pointer" onclick="showPage('home')">KosTuban.</div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="#" onclick="showPage('home')" class="hover:text-blue-600 transition">Beranda</a>
+                <a href="#" onclick="showPage('search')" class="hover:text-blue-600 transition">Cari Kos</a>
+                <a href="#fasilitas" class="hover:text-blue-600 transition" onclick="scrollToFasilitas()">Fasilitas</a>
+                <a href="#" onclick="showPage('testimonial')" class="hover:text-blue-600 transition">Testimoni</a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <button class="md:hidden" onclick="toggleMobileMenu()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            
+            <button class="hidden md:block bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition" onclick="showPage('register')">Daftar Kos</button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobileNav" class="mobile-nav fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 md:hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="text-xl font-bold text-blue-600">KosTuban.</div>
+                    <button onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <a href="#" onclick="showPage('home')" class="block py-2 hover:text-blue-600">Beranda</a>
+                    <a href="#" onclick="showPage('search')" class="block py-2 hover:text-blue-600">Cari Kos</a>
+                    <a href="#" onclick="scrollToFasilitas()" class="block py-2 hover:text-blue-600">Fasilitas</a>
+                    <a href="#" onclick="showPage('testimonial')" class="block py-2 hover:text-blue-600">Testimoni</a>
+                    <button onclick="showPage('register')" class="w-full bg-blue-600 text-white py-2 rounded-full mt-4">Daftar Kos</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <header class="hero-bg h-[600px] flex items-center justify-center text-center text-white px-4">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">Cari Kos Mahasiswa di Tuban</h1>
+                <p class="text-lg md:text-xl mb-8 opacity-90">Temukan hunian nyaman, strategis, dan modern di sekitar kampus Tuban.</p>
+                
+                <div class="bg-white p-2 rounded-lg shadow-xl flex flex-col md:flex-row max-w-4xl mx-auto">
+                    <select id="searchLocationSelect" class="flex-grow p-4 text-gray-700 focus:outline-none">
+                        <option value="">Pilih Wilayah...</option>
+                        <option value="montong">Montong</option>
+                        <option value="tuban-kota">Tuban Kota</option>
+                        <option value="singgahan">Singgahan</option>
+                        <option value="unirow">Dekat Unirow</option>
+                        <option value="ikip">Dekat IKIP</option>
+                        <option value="pusat">Pusat Kota</option>
+                    </select>
+                    <select id="priceFilter" class="p-4 text-gray-700 border-l border-gray-200 focus:outline-none">
+                        <option>Semua Harga</option>
+                        <option>< Rp 500rb</option>
+                        <option>Rp 500rb - 1jt</option>
+                        <option>> Rp 1jt</option>
+                    </select>
+                    <button onclick="performSearch()" class="bg-blue-600 text-white px-10 py-4 rounded-md font-bold hover:bg-blue-700 transition mt-2 md:mt-0">CARI SEKARANG</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Fasilitas Section -->
+        <section id="fasilitas" class="py-20 container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Fasilitas Unggulan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-lg transition">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <h3 class="text-xl font-bold mb-2">Wi-Fi Cepat</h3>
+                    <p class="text-gray-600">Koneksi internet stabil untuk kebutuhan tugas dan hiburan mahasiswa.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-lg transition">
+                    <div class="text-4xl mb-4">🚿</div>
+                    <h3 class="text-xl font-bold mb-2">Kamar Mandi Dalam</h3>
+                    <p class="text-gray-600">Privasi terjaga dengan fasilitas sanitasi modern di setiap kamar.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-lg transition">
+                    <div class="text-4xl mb-4">🧺</div>
+                    <h3 class="text-xl font-bold mb-2">Laundry Service</h3>
+                    <p class="text-gray-600">Fasilitas cuci pakaian yang memudahkan keseharian mahasiswa.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-lg transition">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h3 class="text-xl font-bold mb-2">Keamanan 24 Jam</h3>
+                    <p class="text-gray-600">Sistem keamanan dan penjaga 24 jam untuk kenyamanan penghuni.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Listings -->
+        <section class="bg-gray-100 py-20">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <h2 class="text-3xl font-bold">Rekomendasi Kos di Tuban</h2>
+                        <p class="text-gray-600">Kos pilihan terbaik berdasarkan rating mahasiswa.</p>
+                    </div>
+                    <a href="#" onclick="showPage('search')" class="text-blue-600 font-semibold border-b-2 border-blue-600 hover:text-blue-700 transition">Lihat Semua</a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="kosListings">
+                    <!-- Listings akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="py-20 container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Mengapa Pilih KosTuban?</h2>
+                <p class="text-gray-600">Platform terpercaya untuk mencari hunian mahasiswa di Tuban</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">✓</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Terverifikasi</h3>
+                    <p class="text-gray-600">Semua kos telah melalui proses verifikasi keamanan dan kenyamanan</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">📱</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Mudah Digunakan</h3>
+                    <p class="text-gray-600">Interface sederhana dan proses booking yang cepat</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl">💬</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Dukungan 24/7</h3>
+                    <p class="text-gray-600">Tim customer service siap membantu kapan saja</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- SEARCH PAGE -->
+    <div id="search" class="page">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <h2 class="text-3xl font-bold">Hasil Pencarian Kos</h2>
+                <button onclick="showPage('home')" class="text-blue-600 hover:underline">← Kembali ke Beranda</button>
+            </div>
+            
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-lg shadow-md mb-8 flex flex-wrap gap-4">
+                <select id="locationFilter" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <option value="">Semua Lokasi</option>
+                    <option value="montong">Montong</option>
+                    <option value="tuban-kota">Tuban Kota</option>
+                    <option value="singgahan">Singgahan</option>
+                    <option value="unirow">Dekat Unirow</option>
+                    <option value="ikip">Dekat IKIP</option>
+                    <option value="pusat">Pusat Kota</option>
+                </select>
+                <select id="priceFilterSearch" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <option value="">Semua Harga</option>
+                    <option value="low">< Rp 500rb</option>
+                    <option value="medium">Rp 500rb - 1jt</option>
+                    <option value="high">> Rp 1jt</option>
+                </select>
+                <select id="typeFilter" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <option value="">Semua Jenis</option>
+                    <option value="putra">Putra</option>
+                    <option value="putri">Putri</option>
+                    <option value="campur">Campur</option>
+                </select>
+                <button onclick="applyFilters()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                    Terapkan Filter
+                </button>
+            </div>
+
+            <div id="searchResultsCount" class="text-gray-600 mb-4"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="searchResults">
+                <!-- Results akan diisi oleh JavaScript -->
+            </div>
+
+            <div id="noResults" class="hidden text-center py-20">
+                <div class="text-6xl mb-4">🏠</div>
+                <h3 class="text-xl font-bold mb-2">Tidak ada kos yang sesuai</h3>
+                <p class="text-gray-600 mb-6">Coba ubah filter pencarian atau kata kunci Anda</p>
+                <button onclick="clearFilters()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                    Reset Filter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer dan Script section tetap sama... -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="text-2xl font-bold mb-4">KosTuban.</div>
+                    <p class="text-gray-400 mb-4">Platform terpercaya untuk mencari hunian mahasiswa di Tuban, Jawa Timur.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Menu</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="showPage('home')" class="text-gray-400 hover:text-white">Beranda</a></li>
+                        <li><a href="#" onclick="showPage('search')" class="text-gray-400 hover:text-white">Cari Kos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Lokasi</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Montong</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tuban Kota</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Singgahan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2">
+                        <li class="text-gray-400">📱 WhatsApp: 085748130625</li>
+                        <li class="text-gray-400">📧 info@kostuban.com</li>
+                        <li class="text-gray-400">📍 Tuban, Jawa Timur</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 KosTuban. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Enhanced data dengan kos untuk wilayah baru
+        const kosData = [
+            // MONTONG
+            {
+                id: 1,
+                title: "Kos Putri Melati Montong",
+                location: "Montong, Tuban",
+                price: 450000,
+                type: "putri",
+                rating: 4.8,
+                area: "montong",
+                facilities: ["Wi-Fi", "AC", "Kamar Mandi Dalam", "Laundry", "Security 24 Jam"],
+                description: "Kos putri modern di Montong dengan lingkungan asri dan tenang. Cocok untuk mahasiswa yang menyukai suasana pedesaan yang nyaman.",
+                owner: "Ibu Sari",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 2,
+                title: "Kos Putra Sejahtera Montong",
+                location: "Montong, Tuban",
+                price: 400000,
+                type: "putra",
+                rating: 4.6,
+                area: "montong",
+                facilities: ["Wi-Fi", "Parkir Motor", "Dapur Bersama", "Security"],
+                description: "Kos putra ekonomis di kawasan Montong dengan fasilitas lengkap dan harga terjangkau untuk mahasiswa.",
+                owner: "Bapak Joko",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 3,
+                title: "Kos Campur Asri Montong",
+                location: "Montong, Tuban",
+                price: 500000,
+                type: "campur",
+                rating: 4.7,
+                area: "montong",
+                facilities: ["Wi-Fi", "AC", "Laundry", "Taman", "Parkir"],
+                description: "Kos campur dengan suasana pedesaan yang asri di Montong. Lingkungan hijau dan udara segar.",
+                owner: "Ibu Maya",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+                ]
+            },
+
+            // TUBAN KOTA
+            {
+                id: 4,
+                title: "Kos Elite Tuban Kota",
+                location: "Tuban Kota, Tuban",
+                price: 750000,
+                type: "campur",
+                rating: 4.9,
+                area: "tuban-kota",
+                facilities: ["Wi-Fi", "AC", "Kamar Mandi Dalam", "Gym", "Study Room", "Cafe"],
+                description: "Kos premium di pusat Kota Tuban dengan fasilitas terlengkap dan akses mudah ke berbagai tempat.",
+                owner: "Bapak Ridwan",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 5,
+                title: "Kos Putri Harmoni Tuban Kota",
+                location: "Tuban Kota, Tuban",
+                price: 600000,
+                type: "putri",
+                rating: 4.8,
+                area: "tuban-kota",
+                facilities: ["Wi-Fi", "AC", "Kamar Mandi Dalam", "Security 24 Jam", "CCTV"],
+                description: "Kos putri strategis di Tuban Kota dengan keamanan terjamin dan fasilitas modern.",
+                owner: "Ibu Sari",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1495433324511-bf8e92934d90?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1616137466211-f939fc48ddb0?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 6,
+                title: "Kos Putra Modern Tuban Kota",
+                location: "Tuban Kota, Tuban",
+                price: 550000,
+                type: "putra",
+                rating: 4.5,
+                area: "tuban-kota",
+                facilities: ["Wi-Fi", "AC", "Parkir", "Laundry", "Food Court"],
+                description: "Kos putra modern di pusat kota dengan akses mudah ke kampus dan fasilitas umum.",
+                owner: "Bapak Ahmad",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
+                ]
+            },
+
+            // SINGGAHAN
+            {
+                id: 7,
+                title: "Kos Putri Indah Singgahan",
+                location: "Singgahan, Tuban",
+                price: 480000,
+                type: "putri",
+                rating: 4.7,
+                area: "singgahan",
+                facilities: ["Wi-Fi", "AC", "Kamar Mandi Dalam", "Dapur", "Security"],
+                description: "Kos putri di Singgahan dengan suasana tenang dan nyaman, ideal untuk fokus belajar.",
+                owner: "Ibu Fitri",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 8,
+                title: "Kos Putra Mandiri Singgahan",
+                location: "Singgahan, Tuban",
+                price: 420000,
+                type: "putra",
+                rating: 4.4,
+                area: "singgahan",
+                facilities: ["Wi-Fi", "Parkir Motor", "Dapur Bersama", "Laundry"],
+                description: "Kos putra dengan harga terjangkau di Singgahan, lingkungan aman dan kondusif.",
+                owner: "Bapak Joko",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 9,
+                title: "Kos Campur Hijau Singgahan",
+                location: "Singgahan, Tuban",
+                price: 520000,
+                type: "campur",
+                rating: 4.6,
+                area: "singgahan",
+                facilities: ["Wi-Fi", "AC", "Taman", "Security", "Parkir"],
+                description: "Kos campur di Singgahan dengan konsep hijau dan lingkungan yang asri.",
+                owner: "Ibu Maya",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+                ]
+            },
+
+            // Kos lama
+            // Kos lama untuk kompatibilitas
+            {
+                id: 10,
+                title: "Kos Putri Seroja",
+                location: "Jl. Diponegoro No. 12, dekat Unirow",
+                price: 450000,
+                type: "putri",
+                rating: 4.5,
+                area: "unirow",
+                facilities: ["Wi-Fi", "Kamar Mandi Dalam", "Dapur", "Security 24 Jam"],
+                description: "Kos putri yang nyaman dengan harga terjangkau. Lingkungan aman dan tenang, cocok untuk belajar.",
+                owner: "Ibu Fitri",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 11,
+                title: "Kos Putra Jaya",
+                location: "Jl. Kartini No. 34, dekat IKIP",
+                price: 500000,
+                type: "putra",
+                rating: 4.4,
+                area: "ikip",
+                facilities: ["Wi-Fi", "AC", "Parkir", "Laundry"],
+                description: "Kos putra modern dengan lokasi strategis dekat kampus IKIP. Fasilitas lengkap dengan harga yang kompetitif.",
+                owner: "Bapak Ahmad",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+                ]
+            },
+            {
+                id: 12,
+                title: "Kos Elite Pusat Kota",
+                location: "Jl. Ahmad Yani No. 67, Pusat Kota",
+                price: 650000,
+                type: "campur",
+                rating: 4.8,
+                area: "pusat",
+                facilities: ["Wi-Fi", "AC", "Kamar Mandi Dalam", "Gym", "Security 24 Jam"],
+                description: "Kos premium di pusat kota dengan fasilitas lengkap dan akses mudah ke berbagai tempat.",
+                owner: "Bapak Ridwan",
+                phone: "085748130625",
+                images: [
+                    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+                    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
+                ]
+            }
+        ];
+
+        let currentKos = null;
+        let bookingData = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHomePage();
+            setMinDate();
+        });
+
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Close mobile menu if open
+            closeMobileMenu();
+            
+            // Load page specific content
+            if (pageId === 'home') loadHomePage();
+            if (pageId === 'search') loadSearchPage();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('open');
+        }
+
+        function closeMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.remove('open');
+        }
+
+        function scrollToFasilitas() {
+            if (document.getElementById('home').classList.contains('active')) {
+                document.getElementById('fasilitas').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showPage('home');
+                setTimeout(() => {
+                    document.getElementById('fasilitas').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+            closeMobileMenu();
+        }
+
+        // Home page functions
+        function loadHomePage() {
+            displayKosListings(kosData.slice(0, 6));
+        }
+
+        function displayKosListings(listings) {
+            const container = document.getElementById('kosListings');
+            container.innerHTML = '';
+            
+            listings.forEach(kos => {
+                const kosCard = createKosCard(kos);
+                container.appendChild(kosCard);
+            });
+        }
+
+        function createKosCard(kos) {
+            const card = document.createElement('div');
+            card.className = 'kos-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer';
+            
+            card.innerHTML = `
+                <img src="${kos.images[0]}" alt="${kos.title}" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold bg-${getTypeColor(kos.type)}-100 text-${getTypeColor(kos.type)}-700 px-2 py-1 rounded-full uppercase">${kos.type}</span>
+                        <div class="flex items-center">
+                            <span class="text-yellow-500">★</span>
+                            <span class="text-sm text-gray-600 ml-1">${kos.rating}</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">${kos.title}</h3>
+                    <p class="text-gray-600 text-sm mb-3">${kos.location}</p>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="text-2xl font-bold text-blue-600">Rp ${kos.price.toLocaleString()}</span>
+                            <span class="text-gray-500 text-sm">/bulan</span>
+                        </div>
+                        <button onclick="contactKosOwner(${kos.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                            Hubungi WA
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function getTypeColor(type) {
+            switch(type) {
+                case 'putra': return 'blue';
+                case 'putri': return 'pink';
+                case 'campur': return 'purple';
+                default: return 'gray';
+            }
+        }
+
+        // Search functions
+        function performSearch() {
+            const selectedLocation = document.getElementById('searchLocationSelect').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            
+            // Store search criteria
+            sessionStorage.setItem('selectedLocation', selectedLocation);
+            sessionStorage.setItem('priceFilter', priceFilter);
+            
+            showPage('search');
+        }
+
+        function loadSearchPage() {
+            // Get search criteria from sessionStorage or use defaults
+            const selectedLocation = sessionStorage.getItem('selectedLocation') || '';
+            const priceFilter = sessionStorage.getItem('priceFilter') || '';
+            
+            // Set filter values
+            if (selectedLocation) {
+                document.getElementById('locationFilter').value = selectedLocation;
+            }
+            
+            // Apply filters and show results
+            let filteredKos = filterKosData(kosData, {
+                search: '',
+                price: priceFilter,
+                location: selectedLocation,
+                type: ''
+            });
+            
+            displaySearchResults(filteredKos);
+            updateResultsCount(filteredKos.length, selectedLocation);
+        }
+
+        function applyFilters() {
+            const filters = {
+                location: document.getElementById('locationFilter').value,
+                price: document.getElementById('priceFilterSearch').value,
+                type: document.getElementById('typeFilter').value,
+                search: ''
+            };
+            
+            const filteredKos = filterKosData(kosData, filters);
+            displaySearchResults(filteredKos);
+            updateResultsCount(filteredKos.length, filters.location);
+        }
+
+        function filterKosData(data, filters) {
+            return data.filter(kos => {
+                // Location filter (primary)
+                if (filters.location && kos.area !== filters.location) {
+                    return false;
+                }
+                
+                // Price filter
+                if (filters.price) {
+                    if (filters.price === '< Rp 500rb' && kos.price >= 500000) return false;
+                    if (filters.price === 'Rp 500rb - 1jt' && (kos.price < 500000 || kos.price > 1000000)) return false;
+                    if (filters.price === '> Rp 1jt' && kos.price <= 1000000) return false;
+                    if (filters.price === 'low' && kos.price >= 500000) return false;
+                    if (filters.price === 'medium' && (kos.price < 500000 || kos.price > 1000000)) return false;
+                    if (filters.price === 'high' && kos.price <= 1000000) return false;
+                }
+                
+                // Type filter
+                if (filters.type && kos.type !== filters.type) return false;
+                
+                return true;
+            });
+        }
+
+        function displaySearchResults(results) {
+            const container = document.getElementById('searchResults');
+            const noResults = document.getElementById('noResults');
+            
+            container.innerHTML = '';
+            
+            if (results.length === 0) {
+                noResults.classList.remove('hidden');
+                container.classList.add('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                container.classList.remove('hidden');
+                
+                results.forEach(kos => {
+                    const kosCard = createKosCard(kos);
+                    container.appendChild(kosCard);
+                });
+            }
+        }
+
+        function updateResultsCount(count, location) {
+            const countElement = document.getElementById('searchResultsCount');
+            let locationText = '';
+            
+            switch(location) {
+                case 'montong':
+                    locationText = ' di Montong';
+                    break;
+                case 'tuban-kota':
+                    locationText = ' di Tuban Kota';
+                    break;
+                case 'singgahan':
+                    locationText = ' di Singgahan';
+                    break;
+                case 'unirow':
+                    locationText = ' dekat Unirow';
+                    break;
+                case 'ikip':
+                    locationText = ' dekat IKIP';
+                    break;
+                case 'pusat':
+                    locationText = ' di Pusat Kota';
+                    break;
+                default:
+                    locationText = '';
+            }
+            
+            countElement.textContent = `Ditemukan ${count} kos${locationText}`;
+        }
+
+        function clearFilters() {
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('priceFilterSearch').value = '';
+            document.getElementById('typeFilter').value = '';
+            sessionStorage.removeItem('selectedLocation');
+            sessionStorage.removeItem('priceFilter');
+            
+            displaySearchResults(kosData);
+            updateResultsCount(kosData.length, '');
+        }
+
+        // Contact functions
+        function contactKosOwner(kosId) {
+            const kos = kosData.find(k => k.id === kosId);
+            if (!kos) return;
+            
+            const message = `Halo, saya tertarik dengan kos "${kos.title}" di ${kos.location}. 
+
+📍 Lokasi: ${kos.location}
+💰 Harga: Rp ${kos.price.toLocaleString()}/bulan
+🏠 Jenis: ${kos.type}
+
+Bisakah saya mendapat informasi lebih detail? Terima kasih.`;
+            
+            const whatsappUrl = `https://wa.me/${kos.phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function contactWhatsApp(context) {
+            let message = '';
+            const adminPhone = '085748130625';
+            
+            if (context === 'detail' && currentKos) {
+                message = `Halo, saya tertarik dengan kos "${currentKos.title}" di ${currentKos.location}. Bisakah saya mendapat informasi lebih lanjut?`;
+            } else if (context === 'booking' && bookingData.fullName) {
+                const bookingCode = document.getElementById('bookingCode')?.textContent;
+                message = `Halo, saya ${bookingData.fullName} dengan kode booking ${bookingCode}. Saya ingin konfirmasi pesanan kos saya.`;
+            } else {
+                message = `Halo, saya ingin bertanya tentang layanan KosTuban.`;
+            }
+            
+            const whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Utility functions
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            const checkInInput = document.getElementById('checkIn');
+            if (checkInInput) {
+                checkInInput.setAttribute('min', today);
+            }
+        }
+
+        function showLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.remove('hidden');
+            }
+        }
+
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        // Handle image loading errors
+        document.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.target.src = 'https://via.placeholder.com/400x300/f3f4f6/9ca3af?text=Foto+Tidak+Tersedia';
+            }
+        }, true);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuButton = document.querySelector('[onclick="toggleMobileMenu()"]');
+            
+            if (mobileNav && mobileNav.classList.contains('open') && 
+                !mobileNav.contains(e.target) && 
+                menuButton && !menuButton.contains(e.target)) {
+                closeMobileMenu();
+            }
+        });
+
+        // Initialize feather icons if available
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        });
+
+        // Auto-hide alerts
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+            alertDiv.textContent = message;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Extra functions for compatibility (optional features)
+        function showKosDetail(kosId) {
+            // Redirect to WhatsApp instead of showing detail page
+            contactKosOwner(kosId);
+        }
+
+        function bookKos() {
+            showAlert('Fitur booking akan segera tersedia! Silakan hubungi pemilik kos melalui WhatsApp.', 'info');
+        }
+
+        function submitRegister(event) {
+            if (event) event.preventDefault();
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                showAlert('Pendaftaran berhasil! Tim kami akan menghubungi Anda dalam 1x24 jam.', 'success');
+                
+                const message = `Pendaftaran kos baru melalui KosTuban.\n\nMohon hubungi saya untuk proses verifikasi.\n\nTerima kasih!`;
+                const whatsappUrl = `https://wa.me/085748130625?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                // Reset and go home
+                const form = document.getElementById('registerForm');
+                if (form) form.reset();
+                showPage('home');
+            }, 2000);
+        }
+
+        // Function to handle search by clicking area buttons (optional enhancement)
+        function searchByArea(area) {
+            document.getElementById('searchLocationSelect').value = area;
+            performSearch();
+        }
+    </script>
+
+    <!-- TESTIMONIAL PAGE -->
+    <div id="testimonial" class="page">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Testimoni Mahasiswa</h2>
+                <p class="text-gray-600 mt-2">Apa kata mereka yang sudah tinggal di kos-kos partner kami</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Andi Pratama</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Montong</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600">"Kos di Montong sangat nyaman dan tenang. Wi-Fi cepat, suasana asri. Cocok banget buat yang suka ketenangan!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b1c1?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Sari Dewi</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Tuban Kota</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600">"Kos di pusat kota sangat strategis. Dekat kemana-mana, fasilitas lengkap. Pemilik kos juga baik banget!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Budi Santoso</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Singgahan</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★☆</div>
+                    <p class="text-gray-600">"Lingkungan Singgahan tenang, cocok untuk belajar. Harga terjangkau untuk mahasiswa. Recommended!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Maya Sinta</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Montong</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600">"Suasana pedesaan yang asri di Montong bikin betah. Kamar mandi dalam, AC dingin. Sangat puas!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Rizki Akbar</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Tuban Kota</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600">"Platform KosTuban sangat membantu! Proses pencarian mudah, respon cepat. Terima kasih!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face" alt="Avatar" class="w-12 h-12 rounded-full mr-4 object-cover">
+                        <div>
+                            <div class="font-semibold">Indira Putri</div>
+                            <div class="text-sm text-gray-600">Mahasiswa - Singgahan</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★☆</div>
+                    <p class="text-gray-600">"Kos di Singgahan sangat cocok untuk yang suka suasana tenang. Dekat dengan fasilitas umum juga."</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button onclick="showPage('home')" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                    Kembali ke Beranda
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER KOS PAGE -->
+    <div id="register" class="page">
+        <div class="container mx-auto px-6 py-8">
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+                <h2 class="text-2xl font-bold mb-6">Daftarkan Kos Anda</h2>
+                <p class="text-gray-600 mb-6">Bergabung dengan platform KosTuban dan raih lebih banyak penyewa</p>
+                
+                <form id="registerForm" onsubmit="submitRegister(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Nama Kos *</label>
+                            <input type="text" id="kosName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Nama Pemilik *</label>
+                            <input type="text" id="ownerName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Nomor WhatsApp *</label>
+                            <input type="tel" id="ownerPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="ownerEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-2">Wilayah *</label>
+                        <select id="kosArea" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="">Pilih Wilayah</option>
+                            <option value="montong">Montong</option>
+                            <option value="tuban-kota">Tuban Kota</option>
+                            <option value="singgahan">Singgahan</option>
+                            <option value="unirow">Dekat Unirow</option>
+                            <option value="ikip">Dekat IKIP</option>
+                            <option value="pusat">Pusat Kota</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-2">Alamat Lengkap *</label>
+                        <textarea id="kosAddress" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Harga per Bulan *</label>
+                            <input type="number" id="kosPrice" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Jenis Kos *</label>
+                            <select id="kosType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Pilih Jenis</option>
+                                <option value="putra">Putra</option>
+                                <option value="putri">Putri</option>
+                                <option value="campur">Campur</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-2">Fasilitas</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" value="wifi" class="mr-2"> Wi-Fi*
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="ac" class="mr-2"> AC
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="kamar_mandi_dalam" class="mr-2"> Kamar Mandi Dalam
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="laundry" class="mr-2"> Laundry
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="parkir" class="mr-2"> Parkir
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="dapur" class="mr-2"> Dapur
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="security" class="mr-2"> Security 24 Jam
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="cleaning" class="mr-2"> Cleaning Service
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-2">Deskripsi Kos</label>
+                        <textarea id="kosDesc" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ceritakan tentang kos Anda..."></textarea>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium mb-2">Upload Foto Kos</label>
+                        <input type="file" multiple accept="image/*" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Maksimal 5 foto, format JPG/PNG</p>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
+                        <button type="button" onclick="showPage('home')" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            Kembali
+                        </button>
+                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            Daftarkan Kos
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL KOS PAGE -->
+    <div id="detail" class="page">
+        <div class="container mx-auto px-6 py-8">
+            <button onclick="showPage('search')" class="text-blue-600 hover:underline mb-6">← Kembali ke Pencarian</button>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Gallery -->
+                <div>
+                    <img id="mainImage" src="" alt="Kos" class="w-full h-96 object-cover rounded-lg mb-4">
+                    <div class="grid grid-cols-4 gap-2" id="thumbnails">
+                        <!-- Thumbnail images will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Details -->
+                <div>
+                    <div class="bg-white p-8 rounded-lg shadow-md">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full uppercase">Tersedia</span>
+                            <div id="kosRating" class="flex items-center">
+                                <!-- Rating akan diisi JavaScript -->
+                            </div>
+                        </div>
+                        <h1 id="kosTitle" class="text-3xl font-bold mt-4 mb-2"></h1>
+                        <p id="kosLocation" class="text-gray-600 mb-4 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span></span>
+                        </p>
+                        <div class="flex items-center gap-4 mb-6">
+                            <p id="kosPrice" class="text-3xl font-bold text-blue-600"></p>
+                            <span id="kosType" class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded"></span>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-3">Fasilitas</h3>
+                            <div id="kosFacilities" class="grid grid-cols-2 gap-2">
+                                <!-- Facilities will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-3">Deskripsi</h3>
+                            <p id="kosDescription" class="text-gray-600"></p>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-3">Kontak</h3>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>Pemilik:</strong> <span id="kosOwner"></span></p>
+                                <p><strong>WhatsApp:</strong> <span id="kosPhone"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button onclick="contactWhatsApp('detail')" class="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-green-700 transition">
+                                Hubungi via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Memproses permintaan Anda...</p>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="contactWhatsApp('general')" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.687"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Area Selection Cards (Optional Enhancement) -->
+    <section class="bg-white py-20" style="display: none;" id="areaCards">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Pilih Wilayah Kos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-8 rounded-2xl cursor-pointer hover:scale-105 transition-transform" onclick="searchByArea('montong')">
+                    <h3 class="text-2xl font-bold mb-4">Montong</h3>
+                    <p class="mb-4">Suasana asri dan tenang, cocok untuk yang menyukai lingkungan pedesaan.</p>
+                    <div class="text-sm opacity-90">
+                        <p>• Lingkungan hijau dan sejuk</p>
+                        <p>• Harga terjangkau</p>
+                        <p>• Suasana tenang untuk belajar</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-8 rounded-2xl cursor-pointer hover:scale-105 transition-transform" onclick="searchByArea('tuban-kota')">
+                    <h3 class="text-2xl font-bold mb-4">Tuban Kota</h3>
+                    <p class="mb-4">Pusat kota dengan akses mudah ke berbagai fasilitas dan transportasi.</p>
+                    <div class="text-sm opacity-90">
+                        <p>• Akses mudah ke kampus</p>
+                        <p>• Dekat pusat perbelanjaan</p>
+                        <p>• Transportasi lengkap</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-8 rounded-2xl cursor-pointer hover:scale-105 transition-transform" onclick="searchByArea('singgahan')">
+                    <h3 class="text-2xl font-bold mb-4">Singgahan</h3>
+                    <p class="mb-4">Kawasan berkembang dengan lingkungan yang nyaman dan strategis.</p>
+                    <div class="text-sm opacity-90">
+                        <p>• Lingkungan berkembang</p>
+                        <p>• Dekat fasilitas umum</p>
+                        <p>• Komunitas mahasiswa aktif</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Contact Bar -->
+    <div class="bg-blue-600 text-white py-4" style="display: none;" id="quickContact">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold">Butuh bantuan mencari kos?</h3>
+                    <p class="text-blue-100">Tim kami siap membantu Anda menemukan kos yang tepat</p>
+                </div>
+                <button onclick="contactWhatsApp('help')" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition mt-4 md:mt-0">
+                    Hubungi Kami
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced JavaScript Functions -->
+    <script>
+        // Enhanced contact function for different contexts
+        function contactWhatsApp(context) {
+            let message = '';
+            const adminPhone = '085748130625';
+            
+            switch(context) {
+                case 'detail':
+                    if (currentKos) {
+                        message = `Halo, saya tertarik dengan kos "${currentKos.title}" di ${currentKos.location}.\n\n📍 Lokasi: ${currentKos.location}\n💰 Harga: Rp ${currentKos.price.toLocaleString()}/bulan\n🏠 Jenis: ${currentKos.type}\n\nBisakah saya mendapat informasi lebih detail? Terima kasih.`;
+                    }
+                    break;
+                    
+                case 'help':
+                    message = `Halo KosTuban! 👋\n\nSaya butuh bantuan mencari kos yang sesuai dengan kebutuhan saya. Bisakah tim Anda membantu memberikan rekomendasi?\n\nTerima kasih!`;
+                    break;
+                    
+                case 'general':
+                default:
+                    message = `Halo KosTuban! 👋\n\nSaya ingin bertanya tentang layanan kos di Tuban. Bisakah Anda membantu saya?\n\nTerima kasih!`;
+                    break;
+            }
+            
+            const whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Enhanced search with better UX
+        function performSearch() {
+            const selectedLocation = document.getElementById('searchLocationSelect').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            
+            if (!selectedLocation) {
+                showAlert('Silakan pilih wilayah terlebih dahulu!', 'error');
+                return;
+            }
+            
+            // Store search criteria
+            sessionStorage.setItem('selectedLocation', selectedLocation);
+            sessionStorage.setItem('priceFilter', priceFilter);
+            
+            // Show loading
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                showPage('search');
+            }, 500);
+        }
+
+        // Enhanced alert system
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white shadow-lg transform transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 
+                type === 'info' ? 'bg-blue-500' : 'bg-gray-500'
+            }`;
+            alertDiv.innerHTML = `
+                <div class="flex items-center">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.style.transform = 'translateX(100%)';
+                    setTimeout(() => alertDiv.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // Add to favorites function
+        function addToFavorites(kosId) {
+            let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            if (!favorites.includes(kosId)) {
+                favorites.push(kosId);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                showAlert('Kos ditambahkan ke favorit!', 'success');
+            } else {
+                showAlert('Kos sudah ada di favorit!', 'info');
+            }
+        }
+
+        // Initialize page with better performance
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preload critical functions
+            loadHomePage();
+            setMinDate();
+            
+            // Initialize service worker for offline capability (optional)
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').catch(console.error);
+            }
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMobileMenu();
+                }
+            });
+            
+            // Add smooth scroll behavior
+            document.documentElement.style.scrollBehavior = 'smooth';
+        });
+
+        // Analytics and tracking functions (placeholder)
+        function trackEvent(event, data = {}) {
+            // Google Analytics or other tracking service
+            console.log('Event tracked:', event, data);
+        }
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Application error:', e);
+            showAlert('Terjadi kesalahan. Silakan muat ulang halaman.', 'error');
+        });
+
+        // Optimized image loading
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            images.forEach(img => imageObserver.observe(img));
+        }
+
+        // Print page function
+        function printPage() {
+            window.print();
+        }
+
+        // Share page function
+        function sharePage() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'KosTuban - Platform Kos Mahasiswa',
+                    text: 'Temukan kos terbaik untuk mahasiswa di Tuban',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showAlert('Link berhasil disalin!', 'success');
+                }).catch(() => {
+                    showAlert('Gagal menyalin link', 'error');
+                });
+            }
+        }
+    </script>
+
+    <!-- Performance monitoring -->
+    <script>
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            // Track page load time
+            const loadTime = performance.now();
+            trackEvent('page_load', { loadTime: Math.round(loadTime) });
+            
+            // Initialize lazy loading
+            lazyLoadImages();
+        });
+    </script>
+</body>
+</html>
